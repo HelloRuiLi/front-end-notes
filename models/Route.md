@@ -100,11 +100,9 @@ const query = {
   sortBy: 'name',
 };
 ```
-
 * pathname 中的参数提取, 参考 [path-to-regexp](https://www.npmjs.com/package/path-to-regexp), `history` 有自己的内部实现。
 * 当前 `history` 使用 [query-string](https://github.com/sindresorhus/query-string) 作为 search 的 parse, 不支持嵌套数据,
 若必须, 需要[先 Stringify](https://github.com/sindresorhus/query-string#nesting)
-
 
 ```js
 import querySring from 'query-string'; 
@@ -115,7 +113,20 @@ const parsed = queryString.parse('?foo=bar');
 queryString.stringify(parsed);
 //=> 'foo=bar'
 ```
+* 也可以使用 [qs 来 parse search](https://github.com/ljharb/qs), 它支持嵌套数据， 但是需要开启 `ignoreQueryPrefix` 或者对 query string 进行预处理
 
+```js
+import qs from 'qs';
+const queryString = '?foo=123'.replace('?', '');
+qs.parse(queryString);
+//=> { foo: '123' }
+
+qs.parse('?foo=123', { ignoreQueryPrefix: true })
+//=> { foo: '123' }
+
+qs.stringify({foo: 'bar', nested: {unicorn: 'cake'}})
+//=> 'foo=bar&nested%5Bunicorn%5D=cake'
+```
 #### 多页状态的传递
 
 * 明 `query`
@@ -127,5 +138,6 @@ queryString.stringify(parsed);
 Url 的变化方向, `history` 中 `location.action` 区分 
 
 * `POP` 
-* `PUSH` `REPLACE`
+* `PUSH` 
+* `REPLACE`
 
